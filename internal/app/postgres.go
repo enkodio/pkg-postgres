@@ -13,10 +13,14 @@ func Run(configSettings cfgEntity.Settings, serviceName string) {
 	logger.SetDefaultLogger("debug")
 	log := logger.GetLogger()
 	var (
-		pgClient, transactor = postgres.NewClient(configSettings.PostgresConfigs, serviceName)
+		pgClient, transactor, err = postgres.NewClient(configSettings.PostgresConfigs, serviceName)
 	)
+	if err != nil {
+		log.WithError(err).Error("cant create new pg client")
+		return
+	}
 	ctx := context.Background()
-	err := transactor.Begin(&ctx)
+	err = transactor.Begin(&ctx)
 	if err != nil {
 		log.WithError(err).Error("cant begin transaction")
 		return
