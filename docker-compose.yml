@@ -1,0 +1,19 @@
+version: '3'
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:14
+    ports:
+      - "5432:5432"
+    expose:
+      - "5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_DB: testdb
+    restart: on-failure
+    networks:
+      - outbox_network
+networks:
+  outbox_network:
+    driver: bridge
