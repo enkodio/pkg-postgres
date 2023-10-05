@@ -2,9 +2,11 @@ package postgres
 
 import (
 	"context"
+	"database/sql"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jackc/pgx/v5/stdlib"
 	"github.com/pkg/errors"
 	cfgEntity "postgres_client/pkg/config/entity"
 	"time"
@@ -19,25 +21,33 @@ const (
 
 type client struct {
 	pool        *pgxpool.Pool
+	pgxCfg      *pgxpool.Config
 	serviceName string
 }
 
 func NewClient(cfg cfgEntity.Config, serviceName string) (RepositoryClient, Transactor, error) {
+	pgxCfg, err := pgxpool.ParseConfig(cfg.GetDSN(serviceName))
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "Unable to parse config")
+	}
+	pgxCfg.MaxConns = int32(cfg.GetMaxOpenConns())
+	if pgxCfg.MaxConns == 0 {
+		pgxCfg.MaxConns = 4
+	}
+	pgxCfg.MaxConnIdleTime = maxConnIdleTime
+
 	var pool *pgxpool.Pool
-	err := doWithAttempts(
+
+	pg := client{
+		serviceName: serviceName,
+		pgxCfg:      pgxCfg,
+	}
+
+	err = doWithAttempts(
 		func() error {
 			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 			defer cancel()
 
-			pgxCfg, err := pgxpool.ParseConfig(cfg.GetDSN(serviceName))
-			if err != nil {
-				return errors.Wrap(err, "Unable to parse config")
-			}
-			pgxCfg.MaxConns = int32(cfg.GetMaxOpenConns())
-			if pgxCfg.MaxConns == 0 {
-				pgxCfg.MaxConns = 4
-			}
-			pgxCfg.MaxConnIdleTime = maxConnIdleTime
 			pool, err = pgxpool.NewWithConfig(ctx, pgxCfg)
 			if err != nil {
 				return errors.Wrap(err, "Failed to connect to postgres")
@@ -50,10 +60,7 @@ func NewClient(cfg cfgEntity.Config, serviceName string) (RepositoryClient, Tran
 		return nil, nil, errors.Wrap(err, "All attempts are exceeded. Unable to connect to postgres")
 	}
 
-	pg := client{
-		pool:        pool,
-		serviceName: serviceName,
-	}
+	pg.pool = pool
 	return &pg, &pg, nil
 }
 
@@ -79,6 +86,14 @@ func (c *client) Exec(ctx context.Context, query string, args ...interface{}) (p
 		return tx.Exec(ctx, query, args...)
 	}
 	return c.pool.Exec(ctx, query, args...)
+}
+
+// TODO change for OpenDBFromPool method after release
+func (c *client) GetSqlDB() *sql.DB {
+	db := stdlib.OpenDB(*c.pgxCfg.ConnConfig)
+	db.SetConnMaxLifetime(time.Minute * 1)
+	db.SetMaxIdleConns(0)
+	return db
 }
 
 func doWithAttempts(fn func() error, maxAttempts int, delay int) error {
