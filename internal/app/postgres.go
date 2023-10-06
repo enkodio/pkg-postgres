@@ -3,10 +3,10 @@ package app
 import (
 	"context"
 	"github.com/georgysavva/scany/v2/pgxscan"
-	postgres "postgres_client/internal"
-	"postgres_client/pkg/logger"
+	postgres "gitlab.enkod.tech/pkg/postgres/internal"
+	"gitlab.enkod.tech/pkg/postgres/pkg/logger"
 
-	cfgEntity "postgres_client/pkg/config/entity"
+	cfgEntity "gitlab.enkod.tech/pkg/postgres/pkg/config/entity"
 )
 
 func Run(configSettings cfgEntity.Settings, serviceName string) {

@@ -2,9 +2,9 @@ package main
 
 import (
 	log "github.com/sirupsen/logrus"
+	"gitlab.enkod.tech/pkg/postgres/internal/app"
+	"gitlab.enkod.tech/pkg/postgres/pkg/config"
 	"os"
-	"postgres_client/internal/app"
-	"postgres_client/pkg/config"
 )
 
 const (

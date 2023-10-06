@@ -3,7 +3,7 @@ package postgres
 import (
 	"context"
 	"github.com/pkg/errors"
-	"postgres_client/pkg/logger"
+	"gitlab.enkod.tech/pkg/postgres/pkg/logger"
 
 	"github.com/jackc/pgx/v5"
 )

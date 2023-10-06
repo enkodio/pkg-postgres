@@ -3,9 +3,9 @@ package config
 import (
 	"encoding/json"
 	"fmt"
+	"gitlab.enkod.tech/pkg/postgres/pkg/config/entity"
 	"io/ioutil"
 	"log"
-	"postgres_client/pkg/config/entity"
 )
 
 func LoadConfigSettingsByPath(path string) (configSettings entity.Settings, err error) {

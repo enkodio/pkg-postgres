@@ -1,4 +1,4 @@
-module postgres_client
+module gitlab.enkod.tech/pkg/postgres
 
 go 1.21
 

@@ -8,7 +8,8 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/jackc/pgx/v5/stdlib"
 	"github.com/pkg/errors"
-	cfgEntity "postgres_client/pkg/config/entity"
+	pgClient "gitlab.enkod.tech/pkg/postgres/client"
+	cfgEntity "gitlab.enkod.tech/pkg/postgres/pkg/config/entity"
 	"time"
 )
 
@@ -25,7 +26,7 @@ type client struct {
 	serviceName string
 }
 
-func NewClient(cfg cfgEntity.Config, serviceName string) (RepositoryClient, Transactor, error) {
+func NewClient(cfg cfgEntity.Config, serviceName string) (pgClient.RepositoryClient, pgClient.Transactor, error) {
 	pgxCfg, err := pgxpool.ParseConfig(cfg.GetDSN(serviceName))
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "Unable to parse config")
