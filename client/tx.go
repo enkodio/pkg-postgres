@@ -41,17 +41,17 @@ func (c *client) Begin(ctx *context.Context) error {
 
 func (c *client) Rollback(ctx *context.Context) {
 	if ctx == nil {
-		logger.FromContext(*ctx).Warn(errors.New("empty context"))
+		logger.GetLogger().Warn(errors.New("empty context"))
 		return
 	}
 	tx := c.getTx(*ctx)
 	if tx == nil {
-		logger.FromContext(*ctx).Warn(errors.New("empty transaction"))
+		logger.GetLogger().Warn(errors.New("empty transaction"))
 		return
 	}
 	err := tx.Rollback(*ctx)
 	if err != nil {
-		logger.FromContext(*ctx).Warn(err)
+		logger.GetLogger().Warn(err)
 	}
 	c.deleteTx(ctx)
 }
@@ -62,7 +62,7 @@ func (c *client) Commit(ctx *context.Context) error {
 	}
 	tx := c.getTx(*ctx)
 	if tx == nil {
-		logger.FromContext(*ctx).Warn(errors.New("empty transaction"))
+		logger.GetLogger().Warn(errors.New("empty transaction"))
 		return nil
 	}
 	err := tx.Commit(*ctx)
