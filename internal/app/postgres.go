@@ -29,7 +29,7 @@ func Run(configSettings cfgEntity.Settings, serviceName string) {
 		return
 	}
 
-	_, err = pgClient.Exec(ctx, "INSERT INTO test VALUES ($1)", 1)
+	_, err = pgClient.Exec(ctx, "INSERT INTO test VALUES ($1)", 12)
 	if err != nil {
 		log.WithError(err).Error("cant insert value")
 		return
@@ -38,6 +38,13 @@ func Run(configSettings cfgEntity.Settings, serviceName string) {
 	err = transactor.Commit(&ctx)
 	if err != nil {
 		log.WithError(err).Error("cant commit transaction")
+		return
+	}
+
+	var id []int64
+	err = pgClient.QueryRow(ctx, "SELECT id FROM test WHERE id = 1111").Scan(&id)
+	if err != nil {
+		log.WithError(err).Error("cant exec sql request")
 		return
 	}
 
