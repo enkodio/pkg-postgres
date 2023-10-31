@@ -5,7 +5,6 @@ import (
 	"github.com/enkodio/pkg-postgres/client"
 	cfgEntity "github.com/enkodio/pkg-postgres/pkg/config/entity"
 	"github.com/enkodio/pkg-postgres/pkg/logger"
-	"github.com/georgysavva/scany/v2/pgxscan"
 )
 
 func Run(configSettings cfgEntity.Settings, serviceName string) {
@@ -29,15 +28,20 @@ func Run(configSettings cfgEntity.Settings, serviceName string) {
 		return
 	}
 
-	_, err = pgClient.Exec(ctx, "INSERT INTO test VALUES ($1)", 1)
+	_, err = pgClient.Exec(ctx, "INSERT INTO test VALUES ($1)", 14)
 	if err != nil {
 		log.WithError(err).Error("cant insert value")
-		return
 	}
 
 	err = transactor.Commit(&ctx)
 	if err != nil {
 		log.WithError(err).Error("cant commit transaction")
+	}
+
+	var id int64
+	err = pgClient.QueryRow(ctx, "SELECT id FROM test WHERE id = 13").Scan(&id)
+	if err != nil {
+		log.WithError(err).Error("cant exec sql request")
 		return
 	}
 
@@ -48,7 +52,7 @@ func Run(configSettings cfgEntity.Settings, serviceName string) {
 	}
 	defer rows.Close()
 	var ids []int64
-	err = pgxscan.ScanAll(&ids, rows)
+	err = rows.ScanAll(&ids)
 	if err != nil {
 		log.WithError(err).Error("cant scan values")
 		return

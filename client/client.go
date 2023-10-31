@@ -4,8 +4,6 @@ import (
 	"context"
 	"database/sql"
 	cfgEntity "github.com/enkodio/pkg-postgres/pkg/config/entity"
-	"github.com/jackc/pgx/v5"
-	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/jackc/pgx/v5/stdlib"
 	"github.com/pkg/errors"
@@ -64,28 +62,28 @@ func newClient(cfg cfgEntity.Config, serviceName string) (RepositoryClient, Tran
 	return &pg, &pg, nil
 }
 
-func (c *client) Query(ctx context.Context, query string, args ...interface{}) (pgx.Rows, error) {
+func (c *client) Query(ctx context.Context, query string, args ...interface{}) (Rows, error) {
 	tx := c.getTx(ctx)
 	if tx != nil {
-		return tx.Query(ctx, query, args...)
+		return NewRows(tx.Query(ctx, query, args...))
 	}
-	return c.pool.Query(ctx, query, args...)
+	return NewRows(c.pool.Query(ctx, query, args...))
 }
 
-func (c *client) QueryRow(ctx context.Context, query string, args ...interface{}) pgx.Row {
+func (c *client) QueryRow(ctx context.Context, query string, args ...interface{}) Row {
 	tx := c.getTx(ctx)
 	if tx != nil {
-		return tx.QueryRow(ctx, query, args...)
+		return NewRow(tx.QueryRow(ctx, query, args...))
 	}
-	return c.pool.QueryRow(ctx, query, args...)
+	return NewRow(c.pool.QueryRow(ctx, query, args...))
 }
 
-func (c *client) Exec(ctx context.Context, query string, args ...interface{}) (pgconn.CommandTag, error) {
+func (c *client) Exec(ctx context.Context, query string, args ...interface{}) (CommandTag, error) {
 	tx := c.getTx(ctx)
 	if tx != nil {
-		return tx.Exec(ctx, query, args...)
+		return NewCommandTag(tx.Exec(ctx, query, args...))
 	}
-	return c.pool.Exec(ctx, query, args...)
+	return NewCommandTag(c.pool.Exec(ctx, query, args...))
 }
 
 // TODO change for OpenDBFromPool method after release

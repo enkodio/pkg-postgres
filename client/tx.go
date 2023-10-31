@@ -64,10 +64,10 @@ func (c *client) Commit(ctx *context.Context) error {
 		logger.GetLogger().Warn(errors.New("empty transaction"))
 		return nil
 	}
+	defer c.deleteTx(ctx)
 	err := tx.Commit(*ctx)
 	if err != nil {
 		return errors.Wrap(err, "commit error")
 	}
-	c.deleteTx(ctx)
 	return nil
 }
