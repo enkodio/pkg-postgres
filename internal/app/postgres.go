@@ -3,24 +3,18 @@ package app
 import (
 	"context"
 	"github.com/georgysavva/scany/v2/pgxscan"
-	postgres "gitlab.enkod.tech/pkg/postgres/internal"
-	"gitlab.enkod.tech/pkg/postgres/pkg/logger"
-
+	"gitlab.enkod.tech/pkg/postgres/client"
 	cfgEntity "gitlab.enkod.tech/pkg/postgres/pkg/config/entity"
+	"gitlab.enkod.tech/pkg/postgres/pkg/logger"
 )
 
 func Run(configSettings cfgEntity.Settings, serviceName string) {
-	logger.SetDefaultLogger("debug")
-	log := logger.GetLogger()
 	var (
-		pgClient, transactor, err = postgres.NewClient(configSettings.PostgresConfigs, serviceName)
+		pgClient, transactor = client.NewClient(configSettings.PostgresConfigs, serviceName, nil)
 	)
-	if err != nil {
-		log.WithError(err).Error("cant create new pg client")
-		return
-	}
+	log := logger.GetLogger()
 	ctx := context.Background()
-	err = transactor.Begin(&ctx)
+	err := transactor.Begin(&ctx)
 	if err != nil {
 		log.WithError(err).Error("cant begin transaction")
 		return
