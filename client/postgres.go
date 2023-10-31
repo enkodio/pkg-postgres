@@ -1,10 +1,10 @@
 package client
 
 import (
+	cfgEntity "github.com/enkodio/pkg-postgres/pkg/config/entity"
+	"github.com/enkodio/pkg-postgres/pkg/logger"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
-	cfgEntity "gitlab.enkod.tech/pkg/postgres/pkg/config/entity"
-	"gitlab.enkod.tech/pkg/postgres/pkg/logger"
 )
 
 func NewClient(cfg cfgEntity.Config, serviceName string, log *logrus.Logger) (RepositoryClient, Transactor) {

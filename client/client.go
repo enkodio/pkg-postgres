@@ -3,12 +3,12 @@ package client
 import (
 	"context"
 	"database/sql"
+	cfgEntity "github.com/enkodio/pkg-postgres/pkg/config/entity"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/jackc/pgx/v5/stdlib"
 	"github.com/pkg/errors"
-	cfgEntity "gitlab.enkod.tech/pkg/postgres/pkg/config/entity"
 	"time"
 )
 

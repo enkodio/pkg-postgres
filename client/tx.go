@@ -2,10 +2,9 @@ package client
 
 import (
 	"context"
-	"github.com/pkg/errors"
-	"gitlab.enkod.tech/pkg/postgres/pkg/logger"
-
+	"github.com/enkodio/pkg-postgres/pkg/logger"
 	"github.com/jackc/pgx/v5"
+	"github.com/pkg/errors"
 )
 
 const (

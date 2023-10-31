@@ -1,9 +1,9 @@
 package main
 
 import (
+	"github.com/enkodio/pkg-postgres/internal/app"
+	"github.com/enkodio/pkg-postgres/pkg/config"
 	log "github.com/sirupsen/logrus"
-	"gitlab.enkod.tech/pkg/postgres/internal/app"
-	"gitlab.enkod.tech/pkg/postgres/pkg/config"
 	"os"
 )
 

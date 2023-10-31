@@ -2,10 +2,10 @@ package app
 
 import (
 	"context"
+	"github.com/enkodio/pkg-postgres/client"
+	cfgEntity "github.com/enkodio/pkg-postgres/pkg/config/entity"
+	"github.com/enkodio/pkg-postgres/pkg/logger"
 	"github.com/georgysavva/scany/v2/pgxscan"
-	"gitlab.enkod.tech/pkg/postgres/client"
-	cfgEntity "gitlab.enkod.tech/pkg/postgres/pkg/config/entity"
-	"gitlab.enkod.tech/pkg/postgres/pkg/logger"
 )
 
 func Run(configSettings cfgEntity.Settings, serviceName string) {

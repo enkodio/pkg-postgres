@@ -1,4 +1,4 @@
-module gitlab.enkod.tech/pkg/postgres
+module github.com/enkodio/pkg-postgres
 
 go 1.21
 
