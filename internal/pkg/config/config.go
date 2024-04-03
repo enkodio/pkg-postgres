@@ -3,7 +3,7 @@ package config
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/enkodio/pkg-postgres/pkg/config/entity"
+	"github.com/enkodio/pkg-postgres/internal/pkg/config/entity"
 	"io/ioutil"
 	"log"
 )

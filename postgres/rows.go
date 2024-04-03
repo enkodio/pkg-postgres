@@ -1,4 +1,4 @@
-package client
+package postgres
 
 import (
 	"github.com/georgysavva/scany/v2/pgxscan"
