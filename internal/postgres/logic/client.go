@@ -80,10 +80,6 @@ func (c *Client) Exec(ctx context.Context, query string, args ...interface{}) (p
 	return postgres.NewCommandTag(c.pool.Exec(ctx, query, args...))
 }
 
-// TODO change for OpenDBFromPool method after release
 func (c *Client) GetSqlDB() *sql.DB {
-	db := stdlib.OpenDB(*c.pgxCfg.ConnConfig)
-	db.SetConnMaxLifetime(time.Minute * 1)
-	db.SetMaxIdleConns(0)
-	return db
+	return stdlib.OpenDBFromPool(c.pool)
 }
