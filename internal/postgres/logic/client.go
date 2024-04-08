@@ -67,9 +67,11 @@ func (c *Client) Query(ctx context.Context, query string, args ...interface{}) (
 func (c *Client) QueryRow(ctx context.Context, query string, args ...interface{}) postgres.Row {
 	tx := c.getTx(ctx)
 	if tx != nil {
-		return postgres.NewRow(tx.QueryRow(ctx, query, args...))
+		rows, _ := tx.Query(ctx, query, args...)
+		return postgres.NewRow(rows)
 	}
-	return postgres.NewRow(c.pool.QueryRow(ctx, query, args...))
+	rows, _ := c.pool.Query(ctx, query, args...)
+	return postgres.NewRow(rows)
 }
 
 func (c *Client) Exec(ctx context.Context, query string, args ...interface{}) (postgres.CommandTag, error) {
