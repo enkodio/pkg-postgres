@@ -8,6 +8,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/jackc/pgx/v5/stdlib"
 	"github.com/pkg/errors"
+	"io"
 	"time"
 )
 
@@ -84,4 +85,18 @@ func (c *Client) Exec(ctx context.Context, query string, args ...interface{}) (p
 
 func (c *Client) GetSqlDB() *sql.DB {
 	return stdlib.OpenDBFromPool(c.pool)
+}
+
+func (c *Client) CopyFrom(ctx context.Context, file io.ReadCloser, name string) (postgres.CommandTag, error) {
+	tx := c.getTx(ctx)
+	if tx != nil {
+		return postgres.NewCommandTag(tx.Conn().PgConn().CopyFrom(ctx, file, name))
+	}
+
+	conn, err := c.pool.Acquire(ctx)
+	if err != nil {
+		return postgres.CommandTag{}, err
+	}
+	defer conn.Release()
+	return postgres.NewCommandTag(conn.Conn().PgConn().CopyFrom(ctx, file, name))
 }
