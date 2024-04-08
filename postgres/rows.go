@@ -1,4 +1,4 @@
-package client
+package postgres
 
 import (
 	"github.com/georgysavva/scany/v2/pgxscan"
@@ -16,9 +16,11 @@ func NewRows(rows pgx.Rows, err error) (Rows, error) {
 }
 
 func (r Rows) ScanAll(dest interface{}) error {
-	err := pgxscan.ScanAll(dest, r.Rows)
-	if err != nil {
-		return err
-	}
-	return nil
+	return pgxscan.ScanAll(dest, r.Rows)
+}
+
+// pgx function doesn't work well
+// may be try https://github.com/zolstein/pgx-collect
+func ScanAll[T any](r Rows) ([]T, error) {
+	return pgx.CollectRows(r, pgx.RowToStructByName[T])
 }

@@ -1,8 +1,8 @@
-package client
+package logic
 
 import (
 	"context"
-	"github.com/enkodio/pkg-postgres/pkg/logger"
+	"github.com/enkodio/pkg-postgres/internal/pkg/logger"
 	"github.com/jackc/pgx/v5"
 	"github.com/pkg/errors"
 )
@@ -11,22 +11,22 @@ const (
 	txKey = "txKey"
 )
 
-func (c *client) deleteTx(ctx *context.Context) {
+func (c *Client) deleteTx(ctx *context.Context) {
 	*ctx = context.WithValue(*ctx, txKey+c.serviceName, nil)
 }
 
-func (c *client) setTx(ctx *context.Context, tx pgx.Tx) {
+func (c *Client) setTx(ctx *context.Context, tx pgx.Tx) {
 	*ctx = context.WithValue(*ctx, txKey+c.serviceName, tx)
 }
 
-func (c *client) getTx(ctx context.Context) pgx.Tx {
+func (c *Client) getTx(ctx context.Context) pgx.Tx {
 	if tx, ok := ctx.Value(txKey + c.serviceName).(pgx.Tx); ok {
 		return tx
 	}
 	return nil
 }
 
-func (c *client) Begin(ctx *context.Context) error {
+func (c *Client) Begin(ctx *context.Context) error {
 	if ctx == nil {
 		return errors.New("empty context")
 	}
@@ -38,7 +38,7 @@ func (c *client) Begin(ctx *context.Context) error {
 	return nil
 }
 
-func (c *client) Rollback(ctx *context.Context) {
+func (c *Client) Rollback(ctx *context.Context) {
 	if ctx == nil {
 		logger.GetLogger().Warn(errors.New("empty context"))
 		return
@@ -55,7 +55,7 @@ func (c *client) Rollback(ctx *context.Context) {
 	c.deleteTx(ctx)
 }
 
-func (c *client) Commit(ctx *context.Context) error {
+func (c *Client) Commit(ctx *context.Context) error {
 	if ctx == nil {
 		return errors.New("empty context")
 	}

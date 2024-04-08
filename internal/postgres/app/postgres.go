@@ -3,8 +3,8 @@ package app
 import (
 	"context"
 	"github.com/enkodio/pkg-postgres/client"
-	cfgEntity "github.com/enkodio/pkg-postgres/pkg/config/entity"
-	"github.com/enkodio/pkg-postgres/pkg/logger"
+	cfgEntity "github.com/enkodio/pkg-postgres/internal/pkg/config/entity"
+	"github.com/enkodio/pkg-postgres/internal/pkg/logger"
 )
 
 func Run(configSettings cfgEntity.Settings, serviceName string) {
@@ -39,7 +39,7 @@ func Run(configSettings cfgEntity.Settings, serviceName string) {
 	}
 
 	var id int64
-	err = pgClient.QueryRow(ctx, "SELECT id FROM test WHERE id = 13").Scan(&id)
+	err = pgClient.QueryRow(ctx, "SELECT id FROM test WHERE id = 13333").Scan(&id)
 	if err != nil {
 		log.WithError(err).Error("cant exec sql request")
 		return

@@ -1,21 +1,23 @@
 package client
 
 import (
-	cfgEntity "github.com/enkodio/pkg-postgres/pkg/config/entity"
-	"github.com/enkodio/pkg-postgres/pkg/logger"
+	cfgEntity "github.com/enkodio/pkg-postgres/internal/pkg/config/entity"
+	"github.com/enkodio/pkg-postgres/internal/pkg/logger"
+	"github.com/enkodio/pkg-postgres/internal/postgres/logic"
+	"github.com/enkodio/pkg-postgres/postgres"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )
 
-func NewClient(cfg cfgEntity.Config, serviceName string, log *logrus.Logger) (RepositoryClient, Transactor) {
+func NewClient(cfg cfgEntity.Config, serviceName string, log *logrus.Logger) (postgres.RepositoryClient, postgres.Transactor) {
 	if log != nil {
 		logger.SetLogger(log)
 	} else {
 		logger.SetDefaultLogger("debug")
 	}
-	client, tx, err := newClient(cfg, serviceName)
+	client, err := logic.NewClient(cfg, serviceName)
 	if err != nil {
 		log.Fatal(errors.Wrap(err, "cant create pg client"))
 	}
-	return client, tx
+	return client, client
 }
