@@ -29,11 +29,11 @@ func (r *Row) setNoRows() {
 	r.noRows = true
 }
 
-func (r *Row) NoRows() bool {
+func (r Row) NoRows() bool {
 	return r.noRows
 }
 
-func (r *Row) Scan(dest ...any) (err error) {
+func (r Row) Scan(dest ...any) (err error) {
 	if err = r.rows.Err(); err != nil {
 		return err
 	}
@@ -46,7 +46,7 @@ func (r *Row) Scan(dest ...any) (err error) {
 	return err
 }
 
-func (r *Row) ScanStruct(dest interface{}) error {
+func (r Row) ScanStruct(dest interface{}) error {
 	if err := r.rows.Err(); err != nil {
 		return err
 	}
